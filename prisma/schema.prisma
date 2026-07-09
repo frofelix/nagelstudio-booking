@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id                    String         @id @default(cuid())
+  name                  String
+  email                 String         @unique
+  phone                 String?
+  color                 String?
+  role                  StaffRole      @default(staff)
+  inviteStatus          InviteStatus   @default(draft)
+  active                Boolean        @default(true)
+  canManageBookings     Boolean        @default(false)
+  canManageWorkingHours Boolean        @default(true)
+  canManageServices     Boolean        @default(false)
+  user                  User?
+  bookings              Booking[]
+  vacations             Vacation[]
+  workingHours          WorkingHours[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model Service {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  durationMinutes Int
+  priceCents      Int?
+  active          Boolean   @default(true)
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model WorkingHours {
+  id             String   @id @default(cuid())
+  employeeId     String
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  weekStartDate  DateTime @db.Date
+  date           DateTime @db.Date
+  weekday        Int
+  isWorking      Boolean
+  startTime      String?
+  endTime        String?
+  breakStartTime String?
+  breakEndTime   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([employeeId, date])
+  @@index([employeeId, weekStartDate])
+  @@index([employeeId, date])
+}
+
+model Vacation {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  startDate  DateTime @db.Date
+  endDate    DateTime @db.Date
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([employeeId, startDate, endDate])
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  employeeId    String
+  employee      Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  serviceId     String
+  service       Service       @relation(fields: [serviceId], references: [id])
+  customerName  String
+  customerPhone String?
+  customerEmail String?
+  date          DateTime      @db.Date
+  startTime     String
+  endTime       String
+  status        BookingStatus @default(confirmed)
+  source        BookingSource @default(manual_staff)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([employeeId, date, startTime])
+  @@index([employeeId, date, endTime])
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String
+  role           StaffRole    @default(staff)
+  employeeId     String?      @unique
+  employee       Employee?    @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  passwordHash   String?
+  mustChangePassword Boolean   @default(false)
+  lastLoginAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model BusinessSettings {
+  id                    String   @id @default("default")
+  studioName            String   @default("Nagelstudio")
+  defaultStartTime      String   @default("09:00")
+  defaultEndTime        String   @default("18:00")
+  defaultBreakStartTime String   @default("13:00")
+  defaultBreakEndTime   String   @default("13:30")
+  weekStartsOn          Int      @default(1)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+enum BookingStatus {
+  confirmed
+  cancelled
+  completed
+  no_show
+}
+
+enum BookingSource {
+  manual_staff
+  customer_widget
+}
+
+enum StaffRole {
+  owner
+  admin
+  staff
+}
+
+enum InviteStatus {
+  draft
+  invited
+  active
+  disabled
+}

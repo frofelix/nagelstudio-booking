@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.9), transparent 34rem),
+    #efeff4;
+}
+
+body {
+  color: #171717;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.plain-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.plain-picker::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.phone-shell {
+  width: min(100vw, 430px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #fbfbfc 0%, #f3f3f6 42%, #f7f7f8 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.calendar-grid-bg {
+  background-image:
+    linear-gradient(to bottom, rgba(216, 216, 222, 0.8) 1px, transparent 1px),
+    linear-gradient(to right, rgba(242, 242, 247, 0.9), rgba(255, 255, 255, 0));
+  background-size: 100% 48px, 100% 100%;
+}
+
+.soft-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f6f7 100%);
+}
+
+.ios-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(210, 210, 215, 0.75);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.055);
+}
+
+.ios-button {
+  min-height: 44px;
+  touch-action: manipulation;
+  transition: transform 120ms ease, background-color 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+}
+
+.ios-button:active {
+  transform: scale(0.98);
+}
+
+.bottom-sheet-backdrop {
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(2px);
+}
+
+.app-section {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.app-card {
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+  border: 1px solid rgba(210, 210, 215, 0.75);
+}
+
+.field-surface {
+  background: #f6f6f7;
+  border: 1px solid rgba(210, 210, 215, 0.8);
+}
